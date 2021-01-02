@@ -1,0 +1,11 @@
+Card
+Question = Goodbye
+Answer = Tschüss
+Level = 0
+Date = 0
+
+Card
+Question = Airport
+Answer = Flughafen
+Level = 0
+Date = 0
