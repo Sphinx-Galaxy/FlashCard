@@ -7,12 +7,14 @@
 #include <stdexcept>
 #endif // DEBUG
 
+using namespace std;
+
 string FileHandler::import_cards(const string &filename) {
-    ifstream ifs(filename, std::ios::binary);
+    ifstream ifs(filename, ios::binary);
 
 #ifdef DEBUG
     if(ifs.is_open() == false)
-        throw std::invalid_argument("File not found!");
+        throw invalid_argument("File not found!");
 #endif // DEBUG
 
     string buffer((istreambuf_iterator<char>(ifs)), istreambuf_iterator<char>());
@@ -22,11 +24,11 @@ string FileHandler::import_cards(const string &filename) {
 }
 
 void FileHandler::export_cards(const string &filename, const string &content) {
-    std::ofstream ofs(filename, std::ios::binary);
+    ofstream ofs(filename, ios::binary);
 
 #ifdef DEBUG
     if(ofs.is_open() == false)
-        throw std::invalid_argument("File not found!");
+        throw invalid_argument("File not found!");
 #endif // DEBUG
 
     ofs << content;

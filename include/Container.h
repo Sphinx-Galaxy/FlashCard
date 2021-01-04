@@ -6,15 +6,13 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 class Container
 {
     public:
-        Container(const string &content);
+        Container(const std::string &content);
         virtual ~Container();
 
-        string get_content() const;
+        std::string get_content() const;
         FlashCard *get_active_card() const  {return active_card;}
 
         FlashCard * draw_card();
@@ -22,7 +20,7 @@ class Container
         bool is_done() const;
 
     private:
-        vector<FlashCard*> flash_stack;
+        std::vector<FlashCard*> flash_stack;
         FlashCard* active_card;
 };
 

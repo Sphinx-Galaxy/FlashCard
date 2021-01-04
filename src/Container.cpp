@@ -7,6 +7,8 @@
 #include <iostream>
 #endif // DEBUG
 
+using namespace std;
+
 Container::Container(const string &content) {
     string card_content = "";
     size_t pos = 0;

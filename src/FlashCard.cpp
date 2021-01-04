@@ -6,7 +6,9 @@
 
 #include <time.h>
 
-vector<int> FlashCard::level_list  = {0, 1, 3, 5, 7, 14, 30};
+using namespace std;
+
+vector<int> FlashCard::level_list  = {0, 1, 3, 5, 7, 14};
 
 FlashCard::FlashCard(const string &content) {
 #ifdef DEBUG
