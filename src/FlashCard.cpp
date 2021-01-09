@@ -165,10 +165,7 @@ void FlashCard::update_date() {
 }
 
 void FlashCard::clear_level() {
-    if(level < level_list.size())
-        level = 0;
-    else
-        level -= level_list.size();
+    level -= level%level_list.size();
 }
 
 bool FlashCard::is_due() const {
