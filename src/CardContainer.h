@@ -8,25 +8,49 @@
 
 #include "FlashCard.h"
 
-#include <string>
-#include <vector>
+#include <QListView>
+#include <QString>
+#include <QVector>
 
-class Container
+class CardContainer : public QListView
 {
-    public:
-        Container(const std::string &content);
-        virtual ~Container();
+Q_OBJECT
 
-        std::string get_content() const;
-        FlashCard *get_active_card() const  {return active_card;}
+public:
+    CardContainer();
+    virtual ~CardContainer();
 
-        FlashCard * draw_card();
+    FlashCard* get_active_card() const
+    {
+        return activeCard;
+    }
 
-        bool is_done() const;
+    int get_flashstack_size() const
+    {
+        return flashStack.size();
+    }
 
-    private:
-        std::vector<FlashCard*> flash_stack;
-        FlashCard* active_card;
+    int get_learnable_cards() const;
+
+    void set_filename(const QString& filename);
+
+    FlashCard* draw_card();
+
+    bool is_done() const;
+
+public slots:
+    void load_cards();
+    void store_cards();
+
+    void cardClicked(const QModelIndex index);
+
+signals:
+    void cardSelected(FlashCard*);
+
+private:
+    QString filename;
+    QVector<FlashCard*> flashStack;
+    FlashCard* activeCard;
 };
 
 #endif // CONTAINER_H

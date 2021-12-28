@@ -11,12 +11,14 @@ CONFIG += c++11
 SOURCES += \
     main.cpp \
     src/CardContainer.cpp \
+    src/CardLineEdit.cpp \
     src/FileHandler.cpp \
     src/FlashCard.cpp \
     src/MainWindow.cpp
 
 HEADERS += \
     src/CardContainer.h \
+    src/CardLineEdit.h \
     src/FileHandler.h \
     src/FlashCard.h \
     src/MainWindow.h

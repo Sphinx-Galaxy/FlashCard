@@ -1,8 +1,17 @@
 #include "src/MainWindow.h"
 
+#include "src/FlashCard.h"
+
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
+
+void test()
+{
+    FlashCard myCard1("Card \nQuestion = Goodbye \nAnswer = Tschüss; Wiedersehen \nLevel = 0 \nDate = 0");
+
+    FlashCard myCard2("Airport", {"Flughafen", "Flugzeug"}, 0, 0);
+}
 
 int main(int argc, char *argv[])
 {
@@ -17,7 +26,13 @@ int main(int argc, char *argv[])
             break;
         }
     }
+
+
+    test();
+
     MainWindow w;
     w.show();
+
+
     return a.exec();
 }

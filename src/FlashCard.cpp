@@ -6,34 +6,30 @@
 
 #include <time.h>
 
-using namespace std;
+QVector<int> FlashCard::level_list  = {0, 1, 3, 5, 7, 14};
 
-vector<int> FlashCard::level_list  = {0, 1, 3, 5, 7, 14};
-
-FlashCard::FlashCard(const string &content) {
-#ifdef DEBUG
-    cout << "Loading flashcard with content: " << endl;
-    cout << content << endl;
-#endif // DEBUG
-
-    std::string row = "";
+FlashCard::FlashCard(const QString& content)
+{
+    QString row = "";
     int crow = 0;
 
     for(size_t pos = 0; pos < content.size(); ++pos) {
-        if(content.find("=", pos) == string::npos)
+        if(content.indexOf("=", pos) == -1)
             break;
 
-        pos = content.find("=", pos) + 1;
+        pos = content.indexOf("=", pos) + 1;
 
-        row = content.substr(pos, content.find("\n", pos) - pos);
+        row = content.mid(pos, content.indexOf("\n", pos) - pos);
 
-        fill_row(row, crow);
+        decode_row(row, crow);
         crow++;
     }
+
+    this->setText(question);
 }
 
-FlashCard::FlashCard(const string &question, const vector<string> &answer, int level, long date)
-    : question(question), answer(answer), level(level), date(date) {
+FlashCard::FlashCard(const QString& question, const QVector<QString>& answer, int level, long date)
+    : question(question), answer(answer), level(level), date(date), QStandardItem(question) {
 
     if(date == 0)
         date = time(NULL);
@@ -41,8 +37,8 @@ FlashCard::FlashCard(const string &question, const vector<string> &answer, int l
 
 FlashCard::~FlashCard() {}
 
-string FlashCard::get_content() const {
-    string result = "";
+QString FlashCard::get_content() const {
+    QString result = "";
 
     result += "Question = " + question + "\n";
     result += "Answer = ";
@@ -50,14 +46,14 @@ string FlashCard::get_content() const {
         result += answer.at(i) + (i+1 < answer.size() ? "; " : "");
     result += "\n";
 
-    result += "Level = " + to_string(level) + "\n";
-    result += "Date = " + to_string(date) + "\n";
+    result += "Level = " + QString::number(level) + "\n";
+    result += "Date = " + QString::number(date) + "\n";
 
     return result;
 }
 
-bool FlashCard::check_answer(const string &given_answer) {
-    for(vector<string>::const_iterator it = answer.begin(); it != answer.end(); ++it) {
+bool FlashCard::check_answer(const QString &given_answer) {
+    for(QVector<QString>::const_iterator it = answer.begin(); it != answer.end(); ++it) {
         if(given_answer.compare(*it) == 0) {
             increase_level();
             update_date();
@@ -69,7 +65,7 @@ bool FlashCard::check_answer(const string &given_answer) {
     return false;
 }
 
-bool FlashCard::check_question(const string &given_question) {
+bool FlashCard::check_question(const QString &given_question) {
     if(given_question.compare(question) == 0) {
         increase_level();
         update_date();
@@ -80,79 +76,62 @@ bool FlashCard::check_question(const string &given_question) {
     return false;
 }
 
-string FlashCard::escape_start_end(const string &input) {
+QString FlashCard::escape_start_end(const QString &input) {
 #ifdef DEBUG
     cout << "Escaping input: " << endl;
     cout << input << endl;
 #endif // DEBUG
 
-    string result = "";
+    QString result = "";
     size_t pos = 0;
 
-    while(input[pos++] == ' ');
+    while(input.at(pos++) == ' ');
 
-    result = input.substr(--pos);
+    result = input.right(input.size() - pos + 1);
 
     pos = result.size();
 
-    while(result[pos--] == ' ')
-        result.pop_back();
+    while(result.at(--pos) == ' ')
+        result.chop(1);
 
     return result;
 }
 
-vector<string> FlashCard::generate_answer(const string &row) {
-    vector<string> result;
+QVector<QString> FlashCard::decode_answer(const QString& row) {
+    QVector<QString> result;
 
-    for(size_t pos = 0; pos < row.size(); ++pos) {
-        result.push_back(escape_start_end(row.substr(pos, row.find(";", pos) - pos)));
+    for(int pos = 0; pos < row.size(); ++pos)
+    {
+        pos = row.indexOf(";", pos);
+        result.push_back(escape_start_end(row.left(pos)));
 
-        #ifdef DEBUG
-        cout << "Answer: " << result.back() << endl;
-        #endif // DEBUG
-
-        if(row.find(";", pos) == string::npos)
+        if(pos == -1)
             break;
-
-        pos = row.find(";", pos);
     }
 
     return result;
 }
 
-bool FlashCard::fill_row(const string &row, int crow) {
-#ifdef DEBUG
-    cout << "Filling row with content: " << endl;
-    cout << row << endl;
-#endif // DEBUG
-
+bool FlashCard::decode_row(const QString& row, int crow)
+{
     switch(crow) {
     case 0:
         question = escape_start_end(row);
         break;
     case 1:
-        answer = generate_answer(row);
+        answer = decode_answer(row);
         break;
     case 2:
-        level = stoi(row);
+        level = row.toInt();
         break;
     case 3:
-        date = stol(row);
+        date = row.toLong();
         break;
     default:
         return false;
     }
 
     return true;
-}
-
-string FlashCard::get_answer() const {
-    string result = "";
-
-    for(size_t i = 0; i < answer.size(); ++i)
-        result += answer.at(i) + (i+1 < answer.size() ? "; " : "");
-
-    return result;
 }
 
 void FlashCard::increase_level() {

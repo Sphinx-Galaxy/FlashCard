@@ -8,65 +8,70 @@
 
 #include <QString>
 #include <QVector>
-#include <QWidget>
+#include <QStandardItem>
 
-class FlashCard {
-Q_OBJECT
-    public:
-        FlashCard(const QString& content);
-        FlashCard(const QString& question, const std::vector<QString> &answer, int level = 0, long date = 0);
-        virtual ~FlashCard();
+#define MAXIMUM_LEVEL 11
 
-        QString get_question() const
-        {
-            return question;
-        }
+class FlashCard : public QStandardItem
+{
+public:
+    FlashCard(const QString& content);
+    FlashCard(const QString& question, const QVector<QString>& answer, int level = 0, long date = 0);
+    virtual ~FlashCard();
 
-        QString get_answer() const;
+    QString get_question() const
+    {
+        return question;
+    }
 
-        static std::vector<int> get_level_list()
-        {
-            return level_list;
-        }
+    QVector<QString> get_answer() const
+    {
+        return answer;
+    }
 
-        int get_level() const
-        {
-            return level;
-        }
+    static QVector<int> get_level_list()
+    {
+        return level_list;
+    }
 
-        int get_level(int level) const
-        {
-            return level_list.at(level%level_list.size());
-        }
+    int get_level() const
+    {
+        return level;
+    }
 
-        long get_date() const
-        {
-            return date;
-        }
+    int get_level(int level) const
+    {
+        return level_list.at(level%level_list.size());
+    }
 
-        QString get_content() const;
+    long get_date() const
+    {
+        return date;
+    }
 
-        bool check_answer(const QString& given_answer);
-        bool check_question(const QString& given_question);
+    QString get_content() const;
 
-        bool is_due() const;
+    bool check_answer(const QString& given_answer);
+    bool check_question(const QString& given_question);
 
-    private:
-        QString question;
-        std::vector<QString> answer;
-        static std::vector<int> level_list;
+    bool is_due() const;
 
-        int level;
-        long date;
+private:
+    QString question;
+    QVector<QString> answer;
+    static QVector<int> level_list;
 
-        bool fill_row(const QString& row, int crow);
-        std::vector<QString> generate_answer(const QString& row);
+    int level;
+    long date;
 
-        void increase_level();
-        void update_date();
-        void clear_level();
+    bool decode_row(const QString& row, int crow);
+    QVector<QString> decode_answer(const QString& row);
 
-        QString escape_start_end(const QString& input);
+    void increase_level();
+    void update_date();
+    void clear_level();
+
+    QString escape_start_end(const QString& input);
 };
 
 #endif // FLASHCARD_H

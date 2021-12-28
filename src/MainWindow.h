@@ -5,7 +5,9 @@
  * Author: Mattis Jaksch
  */
 
-class DataBase;
+class CardContainer;
+class QHBoxLayout;
+class QVBoxLayout;
 
 #include <QMainWindow>
 
@@ -18,5 +20,12 @@ public:
     ~MainWindow();
 
     void create_layout();
+
+    QVBoxLayout* create_status_bar();
+
+    QHBoxLayout* create_card_overview();
+
+private:
+    CardContainer* cardContainer;
 };
 #endif // MAINWINDOW_H
