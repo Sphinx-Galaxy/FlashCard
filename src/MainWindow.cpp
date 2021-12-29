@@ -13,6 +13,8 @@
 
 MainWindow::MainWindow()
 {
+    cardContainer = new CardContainer;
+
     create_layout();
 }
 
@@ -60,11 +62,11 @@ QVBoxLayout* MainWindow::create_status_bar()
     QHBoxLayout* buttonHLayout = new QHBoxLayout;
 
     QPushButton* loadButton = new QPushButton("Load");
-    //connect(...) to card container
+    connect(loadButton, SIGNAL(clicked()), cardContainer, SLOT(load_cards()));
     buttonHLayout->addWidget(loadButton);
 
     QPushButton* storeButton = new QPushButton("Store");
-    //connect(...) to card container
+    connect(storeButton, SIGNAL(clicked()), cardContainer, SLOT(store_cards()));
     buttonHLayout->addWidget(storeButton);
 
     QPushButton* trainButton = new QPushButton("Train");
@@ -95,14 +97,6 @@ QHBoxLayout* MainWindow::create_card_overview()
     cardContainer = new CardContainer;
     // Move model to card container
     QStandardItemModel* cardModel = new QStandardItemModel;
-
-    FlashCard* myCard1 = new FlashCard("Card \nQuestion = Goodbye1 \nAnswer = Tschüss; Wiedersehen \nLevel = 0 \nDate = 0");
-    FlashCard* myCard2 = new FlashCard("Card \nQuestion = Goodbye2 \nAnswer = Tschüss; Wiedersehen \nLevel = 0 \nDate = 0");
-    FlashCard* myCard3 = new FlashCard("Card \nQuestion = Goodbye3 \nAnswer = Tschüss; Wiedersehen \nLevel = 0 \nDate = 0");
-
-    cardModel->appendRow(myCard1);
-    cardModel->appendRow(myCard2);
-    cardModel->appendRow(myCard3);
 
     cardContainer->setModel(cardModel);
 

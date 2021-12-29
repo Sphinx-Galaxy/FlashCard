@@ -1,29 +1,12 @@
 #include "CardContainer.h"
 
-#include <stdlib.h>
-#include <time.h>
+#include <QFile>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QTextStream>
 
 CardContainer::CardContainer()
 {
-//    string card_content = "";
-//    size_t pos = 0;
-
-//    for(size_t i = 0; i < content.size(); ++i) {
-//        card_content = content.substr(content.find("Card", pos), content.find("Card", pos+1));
-
-//#ifdef DEBUG
-//        cout << "Generating card content... Found Keyword \"Card\" " << (content.find("Card") == string::npos ? "nowhere" : "at " + to_string(content.find("Card")));
-//#endif // DEBUG
-
-//        pos = content.find("Card", pos+1);
-
-//        i = pos;
-//        flash_stack.push_back(new FlashCard(card_content));
-
-//        if(pos == string::npos)
-//            break;
-//    }
-
     srand(time(NULL));
 
     connect(this, SIGNAL(clicked(const QModelIndex)), this, SLOT(cardClicked(const QModelIndex)));
@@ -33,17 +16,6 @@ CardContainer::~CardContainer() {
     for(size_t i = 0; i < flashStack.size(); ++i)
         delete flashStack.at(i);
 }
-
-//QString CardContainer::get_content() const  {
-//    string result = "";
-
-//    for(size_t i = 0; i < flash_stack.size(); ++i) {
-//        result += "Card\n";
-//        result += flash_stack[i]->get_content() + "\n";
-//    }
-
-//    return result;
-//}
 
 FlashCard* CardContainer::draw_card()
 {
@@ -85,10 +57,71 @@ void CardContainer::cardClicked(const QModelIndex index)
 
 void CardContainer::load_cards()
 {
+    /* Show dialog */
+    filename = QFileDialog::getOpenFileName(this, tr("Open File"), "./");
 
+    QFile file(filename);
+    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox error;
+        error.setText("File cannot be opened");
+        error.exec();
+        return ;
+    }
+
+    /* Load content and cards */
+    QString card_content = "";
+    QTextStream in(&file);
+    QString line;
+
+    while(!in.atEnd()) {
+        line = in.readLine();
+
+        if(line != "\n" && line.size() > 0)
+        {
+            card_content += line + "\n";
+        }
+
+        if(card_content.size() > 0
+                && card_content.contains("Question")
+                && card_content.contains("Answer")
+                && card_content.contains("Level")
+                && card_content.contains("Date"))
+        {
+            flashStack.push_back(new FlashCard(card_content));
+            card_content = "";
+        }
+    }
 }
 
 void CardContainer::store_cards()
 {
+    /* Show dialog */
+    filename = QFileDialog::getSaveFileName(this, tr("Open File"), "./");
 
+    /* Store content */
+    if(!filename.isEmpty())
+    {
+        QString content = "";
+
+        foreach(FlashCard* card, flashStack)
+        {
+            content += "Card\n";
+            content += card->get_content() + "\n";
+        }
+
+        //Save config
+        QFile file(filename);
+        if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+            QMessageBox error;
+            error.setText("File cannot be opened");
+            error.exec();
+            return ;
+        }
+
+        QTextStream in(&file);
+        in << content;
+        file.close();
+    }
 }
