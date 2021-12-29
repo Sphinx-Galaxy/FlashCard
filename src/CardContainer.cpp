@@ -7,14 +7,18 @@
 
 CardContainer::CardContainer()
 {
+    cardModel = new QStandardItemModel(this);
+
     srand(time(NULL));
 
-    connect(this, SIGNAL(clicked(const QModelIndex)), this, SLOT(cardClicked(const QModelIndex)));
+    connect(this, SIGNAL(clicked(const QModelIndex)), this, SLOT(card_clicked(const QModelIndex)));
+
+    setModel(cardModel);
 }
 
-CardContainer::~CardContainer() {
-    for(size_t i = 0; i < flashStack.size(); ++i)
-        delete flashStack.at(i);
+CardContainer::~CardContainer()
+{
+
 }
 
 FlashCard* CardContainer::draw_card()
@@ -49,10 +53,22 @@ bool CardContainer::is_done() const
     return true;
 }
 
-void CardContainer::cardClicked(const QModelIndex index)
+void CardContainer::card_clicked(const QModelIndex index)
 {
-    qDebug("Column: " + (QString::number(index.column())).toLatin1() + " clicked");
-    emit(flashStack.at(index.column()));
+    activeCard = new FlashCard(flashStack.at(index.row())->get_content());
+
+    emit card_selected(activeCard);
+}
+
+void CardContainer::save_card()
+{
+    flashStack.remove(this->currentIndex().row());
+    flashStack.push_back(new FlashCard(activeCard->get_content()));
+
+    cardModel->removeRow(this->currentIndex().row());
+    cardModel->appendRow(this->currentIndex().row(), flashStack.last());
+
+    delete activeCard;
 }
 
 void CardContainer::load_cards()
@@ -89,6 +105,9 @@ void CardContainer::load_cards()
                 && card_content.contains("Date"))
         {
             flashStack.push_back(new FlashCard(card_content));
+            cardModel->appendRow(flashStack.last());
+            //connect(flashStack.last(), SIGNAL(data_changed()), cardModel, SLOT(update()));
+
             card_content = "";
         }
     }

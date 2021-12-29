@@ -94,26 +94,38 @@ QHBoxLayout* MainWindow::create_card_overview()
     QHBoxLayout* mainHLayout = new QHBoxLayout;
 
     /* Left half overview */
-    cardContainer = new CardContainer;
-    // Move model to card container
-    QStandardItemModel* cardModel = new QStandardItemModel;
-
-    cardContainer->setModel(cardModel);
-
     mainHLayout->addWidget(cardContainer);
 
     /* Right half detail */
+    QVBoxLayout* rightHLayout = new QVBoxLayout;
+
+    /* Save Card, New Card */
+    QHBoxLayout* modCardHLayout = new QHBoxLayout;
+
+    QPushButton* saveCardButton = new QPushButton("Save");
+    connect(saveCardButton, SIGNAL(clicked()), cardContainer, SLOT(save_card()));
+
+    QPushButton* newCardButton = new QPushButton("New");
+
+    modCardHLayout->addWidget(saveCardButton);
+    modCardHLayout->addWidget(newCardButton);
+
+    rightHLayout->addLayout(modCardHLayout);
+
+    /* Edit Card Form */
     QFormLayout* cardDetails = new QFormLayout;
 
-    CardLineEdit* questionLine = new CardLineEdit("Empty");
+    CardLineEdit* questionLine = new CardLineEdit("<>", &FlashCard::get_question, &FlashCard::set_question);
     cardDetails->addRow(new QLabel("Question: "), questionLine);
-    //connect(cardContainer, SIGNAL(itemChanged(FlashCard*)), questionLine, SLOT(setItem(FlashCard*)));
+    connect(cardContainer, SIGNAL(card_selected(FlashCard*)), questionLine, SLOT(set_card(FlashCard*)));
 
-    QLineEdit* answerLine = new QLineEdit("Empty");
+    CardLineEdit* answerLine = new CardLineEdit("<>", &FlashCard::get_answer, &FlashCard::set_answer);
     cardDetails->addRow(new QLabel("Answer: "), answerLine);
-    //connect(..)
+    connect(cardContainer, SIGNAL(card_selected(FlashCard*)), answerLine, SLOT(set_card(FlashCard*)));
 
-    mainHLayout->addLayout(cardDetails);
+    rightHLayout->addLayout(cardDetails);
+
+    mainHLayout->addLayout(rightHLayout);
 
     return mainHLayout;
 }

@@ -24,12 +24,19 @@ public:
         return question;
     }
 
-    QVector<QString> get_answer() const
+    QString get_answer() const;
+
+    QVector<QString> get_answer_list() const
     {
         return answer;
     }
 
-    static QVector<int> get_level_list()
+/*    static QVector<int> get_level_list()
+    {
+        return level_list;
+    }*/
+
+    QVector<int> get_level_list()
     {
         return level_list;
     }
@@ -51,6 +58,9 @@ public:
 
     QString get_content() const;
 
+    void set_question(const QString& text);
+    void set_answer(const QString& text);
+
     bool check_answer(const QString& given_answer);
     bool check_question(const QString& given_question);
 
@@ -59,7 +69,8 @@ public:
 private:
     QString question;
     QVector<QString> answer;
-    static QVector<int> level_list;
+    //static QVector<int> level_list;
+    QVector<int> level_list = {0, 1, 3, 5, 7, 14};
 
     int level;
     long date;

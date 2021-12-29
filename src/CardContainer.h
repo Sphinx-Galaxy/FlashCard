@@ -42,15 +42,20 @@ public slots:
     void load_cards();
     void store_cards();
 
-    void cardClicked(const QModelIndex index);
+    void save_card();
+
+    void card_clicked(const QModelIndex index);
 
 signals:
-    void cardSelected(FlashCard*);
+    void card_selected(FlashCard*);
+
 
 private:
     QString filename;
     QVector<FlashCard*> flashStack;
     FlashCard* activeCard;
+
+    QStandardItemModel* cardModel;
 };
 
 #endif // CONTAINER_H

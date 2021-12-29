@@ -6,7 +6,7 @@
 
 #include <time.h>
 
-QVector<int> FlashCard::level_list  = {0, 1, 3, 5, 7, 14};
+//QVector<int> FlashCard::level_list  = {0, 1, 3, 5, 7, 14};
 
 FlashCard::FlashCard(const QString& content)
 {
@@ -150,4 +150,26 @@ void FlashCard::clear_level() {
 bool FlashCard::is_due() const {
     //Add 12 hours, so the difference doesnt need to be precisely 24 hours
     return date + get_level(level) < (time(NULL) + 60*60*12) / (60*60*24);
+}
+
+QString FlashCard::get_answer() const
+{
+    QString res = "";
+
+    foreach(QString ans, answer)
+    {
+        res += ans + ";";
+    }
+
+    return res;
+}
+
+void FlashCard::set_question(const QString& text)
+{
+    question = escape_start_end(text);
+}
+
+void FlashCard::set_answer(const QString& text)
+{
+    answer = decode_answer(text);
 }
