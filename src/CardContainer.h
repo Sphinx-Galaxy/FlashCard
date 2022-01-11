@@ -41,14 +41,16 @@ public:
 public slots:
     void load_cards();
     void store_cards();
+    void store_cards(const QString& filename);
 
     void save_card();
 
     void card_clicked(const QModelIndex index);
 
+    void train();
+
 signals:
     void card_selected(FlashCard*);
-
 
 private:
     QString filename;

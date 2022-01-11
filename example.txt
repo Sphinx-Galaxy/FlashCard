@@ -1,11 +1,12 @@
 Card
 Question = Goodbye
 Answer = Tschüss
-Level = 0
-Date = 0
+Level = 1
+Date = 19003
 
 Card
 Question = Airport
 Answer = Flughafen
-Level = 0
-Date = 0
+Level = 2
+Date = 19003
+

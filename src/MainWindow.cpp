@@ -70,7 +70,7 @@ QVBoxLayout* MainWindow::create_status_bar()
     buttonHLayout->addWidget(storeButton);
 
     QPushButton* trainButton = new QPushButton("Train");
-    //connect(...) to card container
+    connect(trainButton, SIGNAL(clicked()), cardContainer, SLOT(train()));
     buttonHLayout->addWidget(trainButton);
 
     mainVLayout->addLayout(buttonHLayout);

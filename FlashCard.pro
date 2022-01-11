@@ -14,14 +14,16 @@ SOURCES += \
     src/CardLineEdit.cpp \
     src/FileHandler.cpp \
     src/FlashCard.cpp \
-    src/MainWindow.cpp
+    src/MainWindow.cpp \
+    src/TrainDialog.cpp
 
 HEADERS += \
     src/CardContainer.h \
     src/CardLineEdit.h \
     src/FileHandler.h \
     src/FlashCard.h \
-    src/MainWindow.h
+    src/MainWindow.h \
+    src/TrainDialog.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -1,5 +1,7 @@
 #include "CardContainer.h"
 
+#include "TrainDialog.h"
+
 #include <QFile>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -66,7 +68,7 @@ void CardContainer::save_card()
     flashStack.push_back(new FlashCard(activeCard->get_content()));
 
     cardModel->removeRow(this->currentIndex().row());
-    cardModel->appendRow(this->currentIndex().row(), flashStack.last());
+    cardModel->insertRow(this->currentIndex().row(), flashStack.last());
 
     delete activeCard;
 }
@@ -121,26 +123,50 @@ void CardContainer::store_cards()
     /* Store content */
     if(!filename.isEmpty())
     {
-        QString content = "";
-
-        foreach(FlashCard* card, flashStack)
-        {
-            content += "Card\n";
-            content += card->get_content() + "\n";
-        }
-
-        //Save config
-        QFile file(filename);
-        if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
-        {
-            QMessageBox error;
-            error.setText("File cannot be opened");
-            error.exec();
-            return ;
-        }
-
-        QTextStream in(&file);
-        in << content;
-        file.close();
+        store_cards(filename);
     }
+}
+
+void CardContainer::store_cards(const QString& filename)
+{
+    QString content = "";
+
+    foreach(FlashCard* card, flashStack)
+    {
+        content += "Card\n";
+        content += card->get_content() + "\n";
+    }
+
+    //Save config
+    QFile file(filename);
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        QMessageBox error;
+        error.setText("File cannot be opened");
+        error.exec();
+        return ;
+    }
+
+    QTextStream in(&file);
+    in << content;
+    file.close();
+
+}
+
+void CardContainer::train()
+{
+    while(!is_done())
+    {
+        draw_card();
+
+        TrainDialog train(activeCard,
+            activeCard->get_level() < activeCard->get_level_list().size() ? false : true);
+
+        if(train.exec() == 0)
+        {
+            return;
+        }
+    }
+
+    store_cards(filename);
 }
