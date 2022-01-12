@@ -1,64 +1,34 @@
-#include <iostream>
+#include "src/MainWindow.h"
 
-#include "Container.h"
-#include "FileHandler.h"
+#include "src/FlashCard.h"
 
-using namespace std;
+#include <QApplication>
+#include <QLocale>
+#include <QTranslator>
 
-int main() {
+void test()
+{
+    FlashCard myCard1("Card \nQuestion = Goodbye \nAnswer = Tschüss; Wiedersehen \nLevel = 0 \nDate = 0");
 
-    /* Ask for learn file */
-    string filename;
-    do {
-        cout << "Select your work file: " << endl;
+    FlashCard myCard2("Airport", {"Flughafen", "Flugzeug"}, 0, 0);
+}
 
-        char buffer[256];
-        cin.getline(buffer, sizeof(buffer));
-        filename = buffer;
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
 
-    } while(FileHandler::is_valid(filename) == false);
+    QTranslator translator;
+    const QStringList uiLanguages = QLocale::system().uiLanguages();
+    for (const QString &locale : uiLanguages) {
+        const QString baseName = "FlashCard_" + QLocale(locale).name();
+        if (translator.load(":/i18n/" + baseName)) {
+            a.installTranslator(&translator);
+            break;
+        }
+    }
 
-    /* Build flash card container */
-    Container container(FileHandler::import_cards(filename));
+    MainWindow w;
+    w.show();
 
-    /* Check if you actually need to learn */
-    if(container.is_done())
-        return 0;
-
-    /* Ask flash cards */
-    string answer;
-    bool result;
-    do {
-        container.draw_card();
-
-        /* First / Second level */
-        if(container.get_active_card()->get_level() < FlashCard::get_level_list().size())
-            cout << "Question: " << container.get_active_card()->get_question() << endl;
-        else
-            cout << "Answer: " << container.get_active_card()->get_answer() << endl;
-
-        // Acquire answer input
-        char buffer[256];
-        cin.getline(buffer, sizeof(buffer));
-        answer = buffer;
-
-        /* First / Second level */
-        if(container.get_active_card()->get_level() < FlashCard::get_level_list().size())
-            result = container.get_active_card()->check_answer(answer);
-        else
-            result = container.get_active_card()->check_question(answer);
-
-        cout << "Your answer was " << (result ? "correct" : "wrong") << endl;
-
-        if(result == false)
-            cout << "Correct answer would be: " << container.get_active_card()->get_answer();
-
-        cout << endl;
-
-    } while(answer.compare("q") == 0 || !container.is_done());
-
-    /* Save the container */
-    FileHandler::export_cards(filename, container.get_content());
-
-    return 0;
+    return a.exec();
 }

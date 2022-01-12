@@ -1,6 +1,11 @@
 #ifndef FILEHANDLER_H
 #define FILEHANDLER_H
 
+/*
+ * Author: Mattis Jaksch
+ *
+ */
+
 #include <string>
 
 class FileHandler {
