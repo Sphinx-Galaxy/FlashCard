@@ -47,7 +47,6 @@ QString FlashCard::get_content() const {
         result += answer.at(i) + ";";
     }
 
-
     result.chop(1);
     result += "\n";
 
@@ -59,7 +58,7 @@ QString FlashCard::get_content() const {
 
 bool FlashCard::compare(const QString& input, const QString& reference)
 {
-    if(input.size() > reference.size()+1 && input.size() < reference.size()-1)
+    if(input.size() < 1 || (input.size() > reference.size()+1 && input.size() < reference.size()-1))
     {
         return false;
     }
@@ -131,15 +130,13 @@ QVector<QString> FlashCard::decode_answer(const QString& row) {
     QVector<QString> result;
     QString tmp = row;
 
-    for(int pos = 0; pos < tmp.size(); ++pos)
+    int pos = 0;
+    while(pos != -1)
     {
         // TODO: Cut left and right correctly
         pos = tmp.indexOf(";", 0);
         result.push_back(escape_start_end(tmp.left(pos)));
         tmp = row.right(tmp.size() - pos - 1);
-
-        if(pos == -1)
-            break;
     }
 
     return result;

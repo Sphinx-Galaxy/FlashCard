@@ -69,8 +69,14 @@ void TrainDialog::show_check_info(bool ok)
 
     if(ok)
     {
-        info.setText("Correct");
-    }
+        if(reversed)
+        {
+            info.setText("Correct! <" + flashcard->get_question() + ">");
+        }
+        else
+        {
+            info.setText("Correct! <" + flashcard->get_answer() + ">");
+        }    }
     else
     {
         if(reversed)
