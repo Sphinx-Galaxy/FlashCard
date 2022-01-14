@@ -82,6 +82,8 @@ private:
     void update_date();
     void clear_level();
 
+    bool compare(const QString& input, const QString& reference);
+
     QString escape_start_end(const QString& input);
 };
 

@@ -31,7 +31,7 @@ void TrainDialog::create_layout()
 
     // Answer
     answerLine = new QLineEdit;
-    formLayout->addRow("Question", answerLine);
+    formLayout->addRow("Answer", answerLine);
 
     QHBoxLayout* hlayout = new QHBoxLayout;
 
