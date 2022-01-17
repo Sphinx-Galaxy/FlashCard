@@ -63,7 +63,7 @@ bool FlashCard::compare(const QString& input, const QString& reference)
         return false;
     }
 
-    int error_cnt = 0;
+    int error_cnt = abs(input.size() - reference.size());
 
     for(int i = 0; i < input.size(); ++i)
     {
