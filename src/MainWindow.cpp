@@ -106,6 +106,7 @@ QHBoxLayout* MainWindow::create_card_overview()
     connect(saveCardButton, SIGNAL(clicked()), cardContainer, SLOT(save_card()));
 
     QPushButton* newCardButton = new QPushButton("New");
+    connect(newCardButton, SIGNAL(clicked()), cardContainer, SLOT(add_card()));
 
     modCardHLayout->addWidget(saveCardButton);
     modCardHLayout->addWidget(newCardButton);

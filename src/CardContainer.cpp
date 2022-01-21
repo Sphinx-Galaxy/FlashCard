@@ -115,6 +115,13 @@ void CardContainer::load_cards()
     }
 }
 
+void CardContainer::add_card()
+{
+    flashStack.push_back(new FlashCard("empty", {"empty"}));
+    cardModel->appendRow(flashStack.last());
+}
+
+
 void CardContainer::store_cards()
 {
     /* Show dialog */
