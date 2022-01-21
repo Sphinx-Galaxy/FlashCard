@@ -31,7 +31,7 @@ void TrainDialog::create_layout()
 
     // Answer
     answerLine = new QLineEdit;
-    formLayout->addRow("Question", answerLine);
+    formLayout->addRow("Answer", answerLine);
 
     QHBoxLayout* hlayout = new QHBoxLayout;
 
@@ -69,8 +69,14 @@ void TrainDialog::show_check_info(bool ok)
 
     if(ok)
     {
-        info.setText("Correct");
-    }
+        if(reversed)
+        {
+            info.setText("Correct! <" + flashcard->get_question() + ">");
+        }
+        else
+        {
+            info.setText("Correct! <" + flashcard->get_answer() + ">");
+        }    }
     else
     {
         if(reversed)

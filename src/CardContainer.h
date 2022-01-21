@@ -44,6 +44,7 @@ public slots:
     void store_cards(const QString& filename);
 
     void save_card();
+    void add_card();
 
     void card_clicked(const QModelIndex index);
 

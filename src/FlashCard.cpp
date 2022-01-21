@@ -43,7 +43,11 @@ QString FlashCard::get_content() const {
     result += "Question = " + question + "\n";
     result += "Answer = ";
     for(size_t i = 0; i < answer.size(); ++i)
-        result += answer.at(i) + (i+1 < answer.size() ? "; " : "");
+    {
+        result += answer.at(i) + ";";
+    }
+
+    result.chop(1);
     result += "\n";
 
     result += "Level = " + QString::number(level) + "\n";
@@ -52,9 +56,32 @@ QString FlashCard::get_content() const {
     return result;
 }
 
+bool FlashCard::compare(const QString& input, const QString& reference)
+{
+    if(input.size() < 1 || (input.size() > reference.size()+1 && input.size() < reference.size()-1))
+    {
+        return false;
+    }
+
+    int error_cnt = abs(input.size() - reference.size());
+
+    for(int i = 0; i < input.size(); ++i)
+    {
+        if(i >= reference.size())
+        {
+            break ;
+        }
+        error_cnt += (reference.at(i) == input.at(i) ? 0 : 1);
+    }
+
+    return (error_cnt > 1 ? false : true);
+}
+
 bool FlashCard::check_answer(const QString &given_answer) {
     for(QVector<QString>::const_iterator it = answer.begin(); it != answer.end(); ++it) {
-        if(given_answer.compare(*it) == 0) {
+        //if(given_answer.compare(*it) == 0) {
+        if(compare(given_answer, (*it)))
+        {
             increase_level();
             update_date();
             return true;
@@ -66,7 +93,9 @@ bool FlashCard::check_answer(const QString &given_answer) {
 }
 
 bool FlashCard::check_question(const QString &given_question) {
-    if(given_question.compare(question) == 0) {
+    //if(given_question.compare(question) == 0) {
+    if(compare(given_question, (question)))
+    {
         increase_level();
         update_date();
         return true;
@@ -99,14 +128,15 @@ QString FlashCard::escape_start_end(const QString &input) {
 
 QVector<QString> FlashCard::decode_answer(const QString& row) {
     QVector<QString> result;
+    QString tmp = row;
 
-    for(int pos = 0; pos < row.size(); ++pos)
+    int pos = 0;
+    while(pos != -1)
     {
-        pos = row.indexOf(";", pos);
-        result.push_back(escape_start_end(row.left(pos)));
-
-        if(pos == -1)
-            break;
+        // TODO: Cut left and right correctly
+        pos = tmp.indexOf(";", 0);
+        result.push_back(escape_start_end(tmp.left(pos)));
+        tmp = row.right(tmp.size() - pos - 1);
     }
 
     return result;
