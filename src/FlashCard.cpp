@@ -178,6 +178,12 @@ void FlashCard::clear_level() {
 }
 
 bool FlashCard::is_due() const {
+    // At level 10, never ask again
+    if(level == 10)
+    {
+        return false;
+    }
+
     //Add 12 hours, so the difference doesnt need to be precisely 24 hours
     return date + get_level(level) < (time(NULL) + 60*60*12) / (60*60*24);
 }
